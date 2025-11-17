@@ -1,0 +1,28 @@
+<h2>First User</h2>
+@if (!errorMessage) {
+  <p>User Name: {{firstUser.name}}</p>
+  <p>User E-mail: {{firstUser.email}}</p>
+} @else {
+  <!-- Content to display if all preceding conditions are false -->
+  <p>{{errorMessage}}</p>
+}
+
+<h2>Users Todos</h2>
+@for (user of usersTodos; track $index) {
+   <p><strong>{{user.user.name}}</strong></p>
+   @if(user.todos.length>0){
+      @for (todo of user.todos; track $index) {
+        {{todo.title}}<br>
+      }
+   }@else if (user.message) {
+    <p>{{user.message}}</p>
+   }@else {
+    <p>Todo's list is empty</p>
+   }
+}
+
+
+<h2>Users</h2>
+@for (user of users; track $index) {
+   <p>{{user.name}}</p>
+}
