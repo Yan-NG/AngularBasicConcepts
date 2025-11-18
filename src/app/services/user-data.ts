@@ -44,7 +44,6 @@ export class UserData {
       //we catch the error trying to fetch get users
       catchError(this.handleError)
     );
-
   }
 
   // addUser(user:User){
