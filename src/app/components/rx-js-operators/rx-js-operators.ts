@@ -1,6 +1,6 @@
 import { Component, signal, OnInit, OnDestroy  } from '@angular/core';
 import { Product } from '../../models/product';
-import { catchError, debounceTime, distinctUntilChanged, finalize, Subject, switchMap, takeUntil, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, finalize, Subject, switchMap, takeUntil, of, Subscription } from 'rxjs';
 import { ProductService } from '../../services/product-service';
 import { FormsModule } from '@angular/forms';
 @Component({
@@ -24,7 +24,7 @@ export class RxJsOperators implements OnInit, OnDestroy{
   ngOnInit():void{
     this.getProducts()
     this.search$.pipe(
-      debounceTime(200),//debounceTime(): it will wait till the emission of values from an Observable by a specified time. If a new value arrives before the time elapses, the previous value is dropped.
+      debounceTime(100),//debounceTime(): it will wait till the emission of values from an Observable by a specified time. If a new value arrives before the time elapses, the previous value is dropped.
       distinctUntilChanged(), //distinctUntilChanged() : It suppresses duplicate consecutive emissions from an Observable. A new value is emitted only if it's different from the previous one
       //switchMap() :maps each value from the source Observable to a new inner Observable, cancelling the previous one if a new value arrives before it completes.
       switchMap(term =>
@@ -36,10 +36,12 @@ export class RxJsOperators implements OnInit, OnDestroy{
         })
       )
     ),
+    takeUntil(this.destroy$),
       // catchError(err=>this.errorMessage=err)
     ).subscribe({
       next:(products:Product[])=>{
         this.products.set(products)
+        console.log(products)
       },
       error:(err:string)=>this.errorMessage= err
     })
@@ -66,5 +68,6 @@ export class RxJsOperators implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     this.destroy$.next()
     this.destroy$.complete()
+    this.search$.complete()
   }
 }
